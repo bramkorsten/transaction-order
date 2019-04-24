@@ -1,0 +1,25 @@
+{
+  "name": "transaction-order",
+  "version": "1.0.0",
+  "description": "A helper class for creating proposed orders using the Google Transaction api",
+  "main": "order.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bramkorsten/transaction-order.git"
+  },
+  "keywords": [
+    "transaction",
+    "api",
+    "google",
+    "order"
+  ],
+  "author": "Bram Korsten",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bramkorsten/transaction-order/issues"
+  },
+  "homepage": "https://github.com/bramkorsten/transaction-order#readme"
+}

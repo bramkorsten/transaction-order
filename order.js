@@ -24,8 +24,8 @@ class Order {
       id: UNIQUE_ORDER_ID,
       cart: {
         merchant: {
-          id: "pizza_bot_1",
-          name: "Schmonkel Pizza Bedrijf"
+          id: "merchant_id",
+          name: "Merchant Name"
         },
         lineItems: [],
         notes: "",
@@ -158,7 +158,8 @@ class Order {
 
     let obj = items.find((o, i) => {
       if (o.id === id) {
-        let quantity = items[i].quantity;
+        let quantity = o.quantity;
+        const price = -this._getPriceFromAmount(o.price.amount);
         if (quantity == 1) {
           items.splice(i, 1);
           this.order.cart.lineItems = items;
@@ -167,7 +168,7 @@ class Order {
           items[i].quantity = quantity;
           this.order.cart.lineItems = items;
         }
-
+        this._addToPrice(price);
         // TODO: Add the new price to the total
 
         return this;
