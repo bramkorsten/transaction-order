@@ -217,8 +217,8 @@ class Order {
     const subTotalObject = otherItems.find(o => o.id === "subtotal");
     const subTotalPrice = this._getPriceFromAmount(subTotalObject.price.amount);
     let tax = {
-      object: otherItems.find(o => o.id === "btw"),
-      index: otherItems.findIndex(o => o.id === "btw"),
+      object: otherItems.find(o => o.id === "tax"),
+      index: otherItems.findIndex(o => o.id === "tax"),
       percentage: this.settings.taxPercent
     };
 
