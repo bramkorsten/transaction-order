@@ -3,7 +3,11 @@ class Order {
     // Setup a default order using the parameters passed to the constructor and return.
     this.settings = {
       currencyCode: "USD",
-      taxPercent: 21
+      taxPercent: 21,
+      names: {
+        subtotal: "Subtotal",
+        tax: "Tax"
+      }
     };
 
     if (settings) {
@@ -33,7 +37,7 @@ class Order {
       },
       otherItems: [
         {
-          name: "Subtotaal",
+          name: this.settings.names.subtotal,
           id: "subtotal",
           price: {
             amount: {
@@ -46,8 +50,8 @@ class Order {
           type: "SUBTOTAL"
         },
         {
-          name: "Btw",
-          id: "btw",
+          name: this.settings.names.tax,
+          id: "tax",
           price: {
             amount: {
               currencyCode: this.settings.currencyCode,
@@ -122,7 +126,7 @@ class Order {
 
     price = parseFloat(price).toFixed(9);
     const units = parseInt(price.split(".")[0]);
-    const nanos = parseInt(price.split(".")[1]);
+    const nanos = price.split(".")[1];
     const item = {
       name: name,
       id: id,
