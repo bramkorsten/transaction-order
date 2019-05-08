@@ -15,11 +15,9 @@ class Order {
     }
 
     if (order) {
-      console.log("Restoring order");
       this.order = order;
       return this;
     }
-    console.log("Constructing fresh order");
 
     const UNIQUE_ORDER_ID = Math.random()
       .toString(32)
@@ -106,14 +104,18 @@ class Order {
    */
   addItem(id, name, price, notes = "") {
     const items = this.order.cart.lineItems;
-    // check if
     let obj = items.find((o, i) => {
       if (o.id === id) {
         let quantity = items[i].quantity;
         quantity++;
         items[i].quantity = quantity;
+
+        const oldPrice = this._getPriceFromAmount(items[i].price.amount);
+        const newPrice = oldPrice + price;
+        const newAmount = this._createAmountFromPrice(newPrice);
+
+        items[i].price.amount = newAmount;
         this.order.cart.lineItems = items;
-        // TODO: Add the new price to the total
 
         return this;
       }
@@ -124,18 +126,12 @@ class Order {
       return this;
     }
 
-    price = parseFloat(price).toFixed(9);
-    const units = parseInt(price.split(".")[0]);
-    const nanos = price.split(".")[1];
+    const amount = this._createAmountFromPrice(price);
     const item = {
       name: name,
       id: id,
       price: {
-        amount: {
-          currencyCode: this.settings.currencyCode,
-          nanos: nanos,
-          units: units
-        },
+        amount: amount,
         type: "ACTUAL"
       },
       quantity: 1,
@@ -163,24 +159,30 @@ class Order {
     let obj = items.find((o, i) => {
       if (o.id === id) {
         let quantity = o.quantity;
-        const price = -this._getPriceFromAmount(o.price.amount);
+        const price = -this._getPriceFromAmount(o.price.amount) / quantity;
         if (quantity == 1) {
           items.splice(i, 1);
           this.order.cart.lineItems = items;
         } else {
           quantity--;
           items[i].quantity = quantity;
+
+          const oldPrice = this._getPriceFromAmount(items[i].price.amount);
+          const newPrice = oldPrice + price; // Still adding since the price is negative
+          const newAmount = this._createAmountFromPrice(newPrice);
+
+          items[i].price.amount = newAmount;
+
           this.order.cart.lineItems = items;
         }
         this._addToPrice(price);
-        // TODO: Add the new price to the total
 
         return this;
       }
     });
 
     if (obj == undefined) {
-      console.log("Could not find the item to remove");
+      console.log("Could not find the item with id: '" + id + "' to remove");
       return this;
     }
   }
@@ -206,7 +208,6 @@ class Order {
         price.amount.nanos = newAmount.split(".")[1];
         this.order.otherItems[i].price = price;
         this._calculateTotal();
-        // console.log(newAmount);
         return this;
       }
     });
@@ -226,15 +227,11 @@ class Order {
     tax.object.price.amount = this._createAmountFromPrice(taxPrice);
 
     this.order.otherItems[tax.index] = tax.object;
-    // console.log(tax.object);
 
     let totalObject = this.order.totalPrice;
     const totalPrice = subTotalPrice + taxPrice;
     totalObject.amount = this._createAmountFromPrice(totalPrice);
     this.order.totalPrice = totalObject;
-
-    // console.log();
-    // console.log(subTotal);
   }
 
   _getPriceFromAmount(amountObject) {

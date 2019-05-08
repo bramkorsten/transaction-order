@@ -1,6 +1,6 @@
 {
   "name": "transaction-order",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A helper class for creating proposed orders using the Google Transaction api",
   "main": "order.js",
   "scripts": {
